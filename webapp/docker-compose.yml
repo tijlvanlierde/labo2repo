@@ -1,0 +1,48 @@
+version: "3.8"
+
+services:
+  webapp:
+    image: tijlvanlierde/webapp:latest
+    ports:
+      - "3000:3000"
+    environment:
+      MYSQL_URL: mysql://user:user_password@database:3306/animals
+    depends_on:
+      - database
+    restart: on-failure
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  database:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: animals
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  test:
+    image: tijlvanlierde/webapp:latest
+    environment:
+      API_URL: http://webapp:3000
+    depends_on:
+      - webapp
+    restart: on-failure
+    command:
+      [
+        "sh",
+        "-c",
+        "until [ $(curl -s -o /dev/null -w '%{http_code}' http://webapp:3000/) -eq 200 ]; do echo 'Waiting for API...'; sleep 5; done; yarn test",
+      ]
+    volumes:
+      - .:/app
+
+volumes:
+  mysql_data:

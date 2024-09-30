@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+  webapp:
+    build:
+      context: .
+      dockerfile: Dockerfile # Zorg ervoor dat hier het juiste Dockerfile pad staat
+    image: webapp-optimized
+
+    ports:
+      - "3000:3000"
+
+    environment:
+      MYSQL_URL: mysql://user:user_password@database:3306/animals
+    depends_on:
+      - database
+    restart: on-failure
+
+  database:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: animals
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql # Named volume for persistence
+  test:
+    build:
+      context: .
+    environment:
+      API_URL: http://webapp:3000
+    depends_on:
+      - webapp
+    command: ["yarn", "test"]
+
+volumes:
+  mysql_data: # Define the named volume
