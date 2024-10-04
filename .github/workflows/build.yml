@@ -26,6 +26,6 @@ jobs:
       - name: Build Docker image
         uses: docker/build-push-action@v3
         with:
-          context: .
-          file: Dockerfile
+          context: ./webapp
+          file: ./webapp/Dockerfile
           tags: tijlvanlierde/webapp:latest
