@@ -18,3 +18,9 @@ jobs:
         run: yarn install
       - name: Run ESLint
         run: yarn lint
+      - name: Build Docker image
+              uses: docker/build-push-action@v3
+              with:
+                context: .
+                file: Dockerfile
+                tags: tijlvanlierde/webapp:latest       
