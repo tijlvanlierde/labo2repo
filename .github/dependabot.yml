@@ -1,0 +1,7 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions" # Specificeert dat we GitHub Actions willen volgen
+    directory: "/" # Het pad naar de directory waarin de workflows zich bevinden
+    schedule:
+      interval: "weekly" # Hoe vaak Dependabot moet controleren
+    open-pull-requests-limit: 5 # Maximale aantal open pull requests van Dependabot
