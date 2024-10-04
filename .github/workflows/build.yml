@@ -1,26 +1,31 @@
----
 name: Build and test
+
 on:
   push:
     branches:
       - master
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "20"
+
       - name: Install dependencies
         run: yarn install
+
       - name: Run ESLint
         run: yarn lint
+
       - name: Build Docker image
-              uses: docker/build-push-action@v3
-              with:
-                context: .
-                file: Dockerfile
-                tags: tijlvanlierde/webapp:latest       
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: Dockerfile
+          tags: tijlvanlierde/webapp:latest
